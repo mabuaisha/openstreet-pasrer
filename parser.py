@@ -6,7 +6,7 @@ from xml.etree import ElementTree as et
 
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_PATH, 'data.csv')
+DATA_PATH = os.path.join(BASE_PATH, 'data/westbank/data.csv')
 
 RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 RDFS_NAMESPACE = "http://www.w3.org/2000/01/rdf-schema#"
@@ -103,6 +103,16 @@ def generate_rdf_node_resource(node_id, tags, lat, lon):
     element_id.set('rdf:datatype', 'string')
     element_id.text = node_id
     resource.append(element_id)
+
+    element_lat = et.Element('{http://www.osm-namespace.com/}latitude')
+    element_lat.set('rdf:datatype', 'string')
+    element_lat.text = lat
+    resource.append(element_lat)
+
+    element_lon = et.Element('{http://www.osm-namespace.com/}longitude')
+    element_lon.set('rdf:datatype', 'string')
+    element_lon.text = lon
+    resource.append(element_lon)
 
     for key, value in tags.items():
         if value:
