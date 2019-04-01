@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:xsd="http://www.w3.org/2001/XMLSchema-datatypes"
+         xmlns:osm="http://www.osm-namespace.com/">
+
+         <rdf:Description rdf:about="https://www.openstreetmap.org/directions#map=19/31.5195093/35.1121292">
+             <osm:nodeId rdf:datatype="string">5870648186</osm:nodeId>
+             <osm:category rdf:datatype="string">school</osm:category>
+             <osm:name rdf:datatype="string">مدرسة وكالة الغوث</osm:name>
+             <osm:street rdf:datatype="string">شارع دطارق بن زيا</osm:street>
+         </rdf:Description>
+</rdf:RDF>
