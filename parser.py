@@ -7,15 +7,20 @@ from xml.etree import ElementTree as et
 
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_PATH, 'data/westbank/data.csv')
-DATA_PATH = os.path.join(BASE_PATH, 'data/westbank/data.csv')
+WEST_BANK_PATH = os.path.join(BASE_PATH, 'data/westbank/westbank.csv')
+GAZA_PATH = os.path.join(BASE_PATH, 'data/gaza/gaza.csv')
 
 RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 RDFS_NAMESPACE = "http://www.w3.org/2000/01/rdf-schema#"
 OSM_NAMESPACE = "https://www.openstreetmap.org#"
 XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema-datatypes"
 OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#"
-OSM_URL = "https://www.openstreetmap.org/directions#map=19/"
+OSM_URL = "https://www.openstreetmap.org/#map=19/"
+
+DATA_SOURCES = (
+    WEST_BANK_PATH,
+    GAZA_PATH
+)
 
 TAGS_AMINTY_MAPPER = {
     'pharmac': 'pharmacy',
@@ -313,19 +318,21 @@ def generate_owl_ontology(root):
         root.append(element_type)
 
 
-def generate_rdf_tree(root):
+def generate_rdf_tree(root, source_path):
     tree = et.ElementTree(root)
-    tree.write('map.xml',
+    xml_name = os.path.basename(source_path).split('.')[0] + '.xml'
+    file_name = '{0}/{1}'.format(os.path.dirname(source_path), xml_name)
+    tree.write(file_name,
                encoding='utf-8',
                xml_declaration=True,
                method='xml')
 
 
-def generate_rdf_file():
+def generate_rdf_file(source_path):
     keys = []
     root = generate_root_rdf()
     generate_owl_ontology(root)
-    with open(DATA_PATH, mode='r') as csv_file:
+    with open(source_path, mode='r') as csv_file:
         data = pd.read_csv(csv_file)
         for _, entry in data.iterrows():
             tags = generate_tags(entry['tags'])
@@ -335,10 +342,9 @@ def generate_rdf_file():
                                                        str(entry['lon']),
                                                        keys)
             root.append(resource_node)
-    generate_rdf_tree(root)
-    for key in keys:
-        print(key)
+    generate_rdf_tree(root, source_path)
 
 
 if __name__ == '__main__':
-    generate_rdf_file()
+    for source in DATA_SOURCES:
+        generate_rdf_file(source)
