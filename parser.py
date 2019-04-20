@@ -15,7 +15,7 @@ RDFS_NAMESPACE = "http://www.w3.org/2000/01/rdf-schema#"
 OSM_NAMESPACE = "https://www.openstreetmap.org#"
 XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema-datatypes"
 OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#"
-OSM_URL = "https://www.openstreetmap.org/#map=19/"
+OSM_URL = "https://www.openstreetmap.org/node/{0}"
 WIKIDATA_URL = 'https://wikidata.org/entity/{0}'
 
 DATA_SOURCES = (
@@ -225,7 +225,7 @@ def generate_key_using_delimiter(key, delimiter):
 
 
 def generate_rdf_node_resource(node_id, tags, lat, lon, keys):
-    resource_uri = '{0}{1}/{2}'.format(OSM_URL, lat, lon)
+    resource_uri = OSM_URL.format(node_id)
     resource = et.Element(
         '{http://www.w3.org/1999/02/22-rdf-syntax-ns#}Description')
     resource.set('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about',
