@@ -16,6 +16,7 @@ OSM_NAMESPACE = "https://www.openstreetmap.org#"
 XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema-datatypes"
 OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#"
 OSM_URL = "https://www.openstreetmap.org/#map=19/"
+WIKIDATA_URL = 'https://wikidata.org/entity/{0}'
 
 DATA_SOURCES = (
     WEST_BANK_PATH,
@@ -48,6 +49,7 @@ IGNORE_KEYS = (
 )
 
 KEYS = (
+    'author',
     'id',
     'type',
     'latitude',
@@ -229,6 +231,16 @@ def generate_rdf_node_resource(node_id, tags, lat, lon, keys):
     resource.set('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}about',
                  resource_uri)
 
+    element_type = et.Element(
+        '{http://www.w3.org/1999/02/22-rdf-syntax-ns#}type')
+    resource.append(element_type)
+    element_type.set('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource', '#node')
+
+    # Create element ID
+    element_aut = et.Element('{https://www.openstreetmap.org#}author')
+    element_aut.text = 'Mohammed AbuAisha'
+    resource.append(element_aut)
+
     # Create element ID
     element_id = et.Element('{https://www.openstreetmap.org#}id')
     element_id.text = node_id
@@ -257,6 +269,12 @@ def generate_rdf_node_resource(node_id, tags, lat, lon, keys):
                 continue
             elif key == 'amenity':
                 value = TAGS_AMINTY_MAPPER.get(tags['amenity'], tags['amenity'])
+            elif key == 'wikidata':
+                owl_same = et.Element('{http://www.w3.org/2002/07/owl#}sameAs')
+                owl_same.set('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource',
+                             WIKIDATA_URL.format(value))
+                resource.append(owl_same)
+
             lang_attr = None
             if re.match(NAME_REGEX, key):
                 key, lang_attr = key.split(':')
