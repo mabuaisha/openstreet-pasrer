@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
-<rdf:RDF xmlns:osm="https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm.rdf#"
-         xmlns:owl="http://www.w3.org/2002/07/owl#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+<rdf:RDF xmlns:osm="https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#"
+         xmlns:owl="http://www.w3.org/2002/07/owl#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:xsd="http://www.w3.org/2001/XMLSchema-datatypes">
     <rdf:Description rdf:about="https://www.openstreetmap.org/node/5343856950">
         <rdf:type rdf:resource="#node"/>

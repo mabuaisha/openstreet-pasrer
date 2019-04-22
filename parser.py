@@ -15,7 +15,7 @@ GAZA_PATH = os.path.join(BASE_PATH, 'data/gaza/gaza.csv')
 
 RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 RDFS_NAMESPACE = "http://www.w3.org/2000/01/rdf-schema#"
-OSM_NAMESPACE = "https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm.rdf#"
+OSM_NAMESPACE = "https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#"
 XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema-datatypes"
 OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#"
 OSM_URL = "https://www.openstreetmap.org/node/{0}"
@@ -627,20 +627,20 @@ def generate_rdf_node_resource(node_id, tags, lat, lon, keys):
     element_type.set('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource', '#node')
 
     # Create element ID
-    element_aut = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm.rdf#}author')
+    element_aut = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#}author')
     element_aut.text = 'Mohammed AbuAisha'
     resource.append(element_aut)
 
     # Create element ID
-    element_id = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm.rdf#}id')
+    element_id = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#}id')
     element_id.text = node_id
     resource.append(element_id)
 
-    element_lat = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm.rdf#}latitude')
+    element_lat = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#}latitude')
     element_lat.text = lat
     resource.append(element_lat)
 
-    element_lon = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm.rdf#}longitude')
+    element_lon = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#}longitude')
     element_lon.text = lon
     resource.append(element_lon)
 
@@ -682,7 +682,7 @@ def generate_rdf_node_resource(node_id, tags, lat, lon, keys):
             # for delimiter in ['_', ':']:
             #     key = generate_key_using_delimiter(key, delimiter)
             if key in KEYS:
-                key = '{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm.rdf#}' + key
+                key = '{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#}' + key
                 element_tag = et.Element(key)
                 # element_tag.set('rdf:datatype', 'string')
                 if lang_attr:
