@@ -15,7 +15,7 @@ GAZA_PATH = os.path.join(BASE_PATH, 'data/gaza/gaza.csv')
 
 RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
 RDFS_NAMESPACE = "http://www.w3.org/2000/01/rdf-schema#"
-OSM_NAMESPACE = "https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#"
+OSM_NAMESPACE = "https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v2.rdf#"
 XSD_NAMESPACE = "http://www.w3.org/2001/XMLSchema-datatypes"
 OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#"
 OSM_URL = "https://www.openstreetmap.org/node/{0}"
@@ -52,7 +52,6 @@ IGNORE_KEYS = (
 )
 
 KEYS = (
-    'author',
     'id',
     'type',
     'latitude',
@@ -627,29 +626,25 @@ def generate_rdf_node_resource(node_id, tags, lat, lon, keys):
     element_type.set('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource', '#node')
 
     # Create element ID
-    element_aut = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#}author')
-    element_aut.text = 'Mohammed AbuAisha'
-    resource.append(element_aut)
-
-    # Create element ID
-    element_id = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#}id')
+    element_id = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v2.rdf#}id')
     element_id.text = node_id
     resource.append(element_id)
 
-    element_lat = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#}latitude')
+    element_lat = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v2.rdf#}latitude')
     element_lat.text = lat
     resource.append(element_lat)
 
-    element_lon = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#}longitude')
+    element_lon = et.Element('{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v2.rdf#}longitude')
     element_lon.text = lon
     resource.append(element_lon)
 
     geo_resource = GEO_MAP.get(node_id)
-    if geo_resource:
-        owl_geo = et.Element('{http://www.w3.org/2002/07/owl#}sameAs')
-        owl_geo.set('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource',
-                    geo_resource)
-        resource.append(owl_geo)
+    # uncomment this whenever we need to apply for mappings
+    # if geo_resource:
+    #     owl_geo = et.Element('{http://www.w3.org/2002/07/owl#}sameAs')
+    #     owl_geo.set('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource',
+    #                 geo_resource)
+    #     resource.append(owl_geo)
 
     for key, value in tags.items():
         if key == 'country':
@@ -658,6 +653,7 @@ def generate_rdf_node_resource(node_id, tags, lat, lon, keys):
     else:
         tags['country'] = 'Palestine'
 
+    has_wiki_data = False
     for key, value in tags.items():
         if value:
             if key not in keys:
@@ -667,10 +663,12 @@ def generate_rdf_node_resource(node_id, tags, lat, lon, keys):
             elif key == 'amenity':
                 value = TAGS_AMINTY_MAPPER.get(tags['amenity'], tags['amenity'])
             elif key == 'wikidata':
-                owl_same = et.Element('{http://www.w3.org/2002/07/owl#}sameAs')
-                owl_same.set('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource',
-                             WIKIDATA_URL.format(value))
-                resource.append(owl_same)
+                pass
+                # has_wiki_data = True
+                # owl_same = et.Element('{http://www.w3.org/2002/07/owl#}sameAs')
+                # owl_same.set('{http://www.w3.org/1999/02/22-rdf-syntax-ns#}resource',
+                #              WIKIDATA_URL.format(value))
+                # resource.append(owl_same)
 
             lang_attr = None
             if re.match(NAME_REGEX, key):
@@ -679,16 +677,17 @@ def generate_rdf_node_resource(node_id, tags, lat, lon, keys):
             if OWL_MAP.get(key):
                 key = OWL_MAP[key]
 
-            # for delimiter in ['_', ':']:
-            #     key = generate_key_using_delimiter(key, delimiter)
             if key in KEYS:
-                key = '{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v1.rdf#}' + key
+                key = '{https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v2.rdf#}' + key
                 element_tag = et.Element(key)
-                # element_tag.set('rdf:datatype', 'string')
                 if lang_attr:
                     element_tag.set('xml:lang', lang_attr)
                 element_tag.text = value
                 resource.append(element_tag)
+    # Uncomment this when is is needed to generate separate sameAs
+    # file for both west bank and gaza
+    # if not (has_wiki_data or geo_resource):
+    #     resource = None
 
     return resource
 
@@ -735,7 +734,9 @@ def generate_owl_ontology(root):
 
 def generate_rdf_tree(root, source_path):
     tree = et.ElementTree(root)
-    xml_name = os.path.basename(source_path).split('.')[0] + '.xml'
+    # name = os.path.basename(source_path).split('.')[0] + 'sameAs'
+    name = os.path.basename(source_path).split('.')[0]
+    xml_name = name + '.xml'
     file_name = '{0}/{1}'.format(os.path.dirname(source_path), xml_name)
     tree.write(file_name,
                encoding='utf-8',
@@ -746,7 +747,6 @@ def generate_rdf_tree(root, source_path):
 def generate_rdf_file(source_path):
     keys = []
     root = generate_root_rdf()
-    # generate_owl_ontology(root)
     with open(source_path, mode='r') as csv_file:
         data = pd.read_csv(csv_file)
         for _, entry in data.iterrows():
@@ -756,7 +756,8 @@ def generate_rdf_file(source_path):
                                                        str(entry['lat']),
                                                        str(entry['lon']),
                                                        keys)
-            root.append(resource_node)
+            if resource_node:
+                root.append(resource_node)
     generate_rdf_tree(root, source_path)
 
 

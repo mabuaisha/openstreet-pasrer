@@ -1,6 +1,5 @@
 import csv
 import os
-from xml.etree import ElementTree as et
 import pandas as pd
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
