@@ -1,0 +1,7 @@
+PREFIX osm: <https://raw.githubusercontent.com/birzeitknowledgegraph-2019/Ontology/master/osm_v2.rdf#>
+select ?osm_subject ?amenity ?ar ?en ?fr where {
+?osm_subject osm:amenity ?amenity .
+    optional {?osm_subject osm:name ?ar FILTER ( lang(?ar) = "ar" )}
+    optional { ?osm_subject osm:name ?en FILTER ( lang(?en) = "en" )}
+    optional { ?osm_subject osm:name ?fr FILTER ( lang(?fr) = "fr" )}
+}
